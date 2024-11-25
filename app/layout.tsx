@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Plus_Jakarta_Sans as FontSans } from "next/font/google";
-import { ThemeProvider } from "next-themes";
+import Navbar from "@/components/Navbar";
+// import { ThemeProvider } from "next-themes";
 
 import { cn } from "@/lib/utils";
 
@@ -12,9 +13,8 @@ const fontSans = FontSans({
 });
 
 export const metadata: Metadata = {
-  title: "verbis_",
-  description:
-    "Influencer Hotel Collaboration Platform",
+  title: "Verbis",
+  description: "Influencer and Hotel Collaboration Software",
   icons: {
     icon: "/assets/icons/logo-icon.svg",
   },
@@ -28,14 +28,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={cn(
-          "min-h-screen bg-dark-300 font-sans antialiased",
-          fontSans.variable
-        )}
+        className={cn("min-h-screen font-sans antialiased", fontSans.variable)}
       >
-        <ThemeProvider attribute="class" defaultTheme="dark">
-          {children}
-        </ThemeProvider>
+        {/* <ThemeProvider attribute="class" defaultTheme="dark"> */}
+        <Navbar />
+        {children}
+        {/* </ThemeProvider> */}
       </body>
     </html>
   );
