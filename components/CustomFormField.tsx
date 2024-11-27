@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Control } from "react-hook-form";
 import { FormFieldType } from "./forms/InfluencerForm";
 import Image from "next/image";
-import ''
+import 'react'
 
 interface CustomProps {
   control: Control<any>;
