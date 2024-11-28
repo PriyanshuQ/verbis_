@@ -9,10 +9,12 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Control } from "react-hook-form";
+import { Control, Form } from "react-hook-form";
 import { FormFieldType } from "./forms/InfluencerForm";
 import Image from "next/image";
-import 'react'
+import "react-phone-number-input/style.css";
+import PhoneInput, { parsePhoneNumber } from "react-phone-number-input";
+import { E164Number } from "libphonenumber-js/core";
 
 interface CustomProps {
   control: Control<any>;
@@ -57,9 +59,31 @@ const RenderField = ({ field, props }: { field: any; props: CustomProps }) => {
       break;
 
     case FormFieldType.PHONE_INPUT:
-        return(
-
-        )  
+      return (
+        <FormControl>
+          <PhoneInput
+            defaultCountry="IN"
+            placeholder={placeholder}
+            international
+            withCountryCallingCode
+            value={field.value as E164Number | undefined}
+            onChange={(value) => {
+              // Prevent backspacing the country code
+              if (value) {
+                const parsedNumber = parsePhoneNumber(value);
+                if (parsedNumber) {
+                  field.onChange(parsedNumber.number); // Update only valid numbers
+                } else {
+                  field.onChange(value); // Fallback to the raw input
+                }
+              } else {
+                field.onChange(""); // Set to empty string if no value
+              }
+            }}
+            className="input-phone"
+          />
+        </FormControl>
+      );
     default:
       break;
   }
@@ -77,7 +101,6 @@ const CustomFormField = (props: CustomProps) => {
             <FormLabel>{label}</FormLabel>
           )}
           <RenderField field={field} props={props} />
-
           <FormMessage className="shad-error" />
         </FormItem>
       )}
