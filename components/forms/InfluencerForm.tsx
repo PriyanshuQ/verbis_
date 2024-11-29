@@ -47,7 +47,7 @@
 //           <h1 className="header">Hey there,</h1>
 //           <p className="text-dark-700">Book your hotel with us</p>
 //         </section>
-//         <CustomFormField 
+//         <CustomFormField
 //           fieldType={FormFieldType.INPUT}
 //           control={form.control}
 //           name="name"
@@ -57,7 +57,7 @@
 //           iconAlt="user"
 //         />
 //         {/* EMAIL */}
-//         <CustomFormField 
+//         <CustomFormField
 //           fieldType={FormFieldType.INPUT}
 //           control={form.control}
 //           name="email"
@@ -66,14 +66,14 @@
 //           iconSrc="/assets/icons/email.svg"
 //           iconAlt="email"
 //         />
-//         <CustomFormField 
+//         <CustomFormField
 //           fieldType={FormFieldType.PHONE_INPUT}
 //           control={form.control}
 //           name="phone"
 //           label="Phone Number"
 //           placeholder="0987654321"
 //         />
-        
+
 //         <Button type="submit">Submit</Button>
 //       </form>
 //     </Form>
@@ -81,9 +81,6 @@
 // };
 
 // export default InfluencerForm;
-
-
-
 
 "use client";
 
@@ -94,28 +91,24 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import CustomFormField from "../CustomFormField";
+import SubmitButton from "../SubmitButton";
+import { UserFormValidation } from "@/lib/validation";
+import { useRouter } from "next/navigation";
 
 export enum FormFieldType {
-  INPUT = 'input',
-  TEXTAREA = 'textarea',
-  PHONE_INPUT = 'phoneInput',
-  CHECKBOX = 'checkbox',
-  DATE_PICKER = 'datePicker',
-  SELECT = 'select',
-  SKELETON = 'skeleton',
+  INPUT = "input",
+  TEXTAREA = "textarea",
+  PHONE_INPUT = "phoneInput",
+  CHECKBOX = "checkbox",
+  DATE_PICKER = "datePicker",
+  SELECT = "select",
+  SKELETON = "skeleton",
 }
 
-const formSchema = z.object({
-  username: z.string().min(4, {
-    message: "Username must be at least 4 characters.",
-  }),
-  email: z.string().email({
-    message: "Please enter a valid email.",
-  }),
-});
-
 const InfluencerForm = () => {
+  const router = useRouter();
   const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Fetch user details (email) from the API on mount
   useEffect(() => {
@@ -137,17 +130,31 @@ const InfluencerForm = () => {
   }, []);
 
   // Define the form and default values
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof UserFormValidation>>({
+    resolver: zodResolver(UserFormValidation),
     defaultValues: {
-      username: "",
+      name: "",
       email: userEmail || "", // Set the email if available from the API, or empty string
+      phone: "",
     },
   });
 
   // Define a submit handler
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values); // Handle form submission
+  async function onSubmit({
+    name,
+    email,
+    phone,
+  }: z.infer<typeof UserFormValidation>) {
+    setIsLoading(true);
+
+    try {
+      // const userData = { name, email, phone };
+
+      // const user = await createUser(userData);
+      // if (user) router.push(`/patients/${user.id}/register`);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (
@@ -187,7 +194,7 @@ const InfluencerForm = () => {
           placeholder="0987654321"
         />
 
-        <Button type="submit">Submit</Button>
+        <SubmitButton isLoading={isLoading}>Get Started</SubmitButton>
       </form>
     </Form>
   );
