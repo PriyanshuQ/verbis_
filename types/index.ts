@@ -21,20 +21,20 @@ declare type SearchParamProps = {
   
   declare interface RegisterInfluencerParams extends CreateInfluencerParams {
     influencerId: string;
-    birthDate: Date;
+    // birthDate: Date;
     gender: Gender;
     socialMediaPlatform: Platform[];
     socialMediaHandle: string;
     followerCount: number;
     engagementRate: number; // percentage
-    portfolioUrl: string | undefined;
+    // portfolioUrl: string | undefined;
     identificationType: string | undefined;
     identificationNumber: string | undefined;
     identificationDocument: FormData | undefined;
     privacyConsent: boolean;
-    address: string;
+    // address: string;
     previousCollaborations: string | undefined;
-    mediaKit: FormData | undefined; // optional file upload for a media kit
+    // mediaKit: FormData | undefined; // optional file upload for a media kit
   }
   
   declare interface HotelDetails {
