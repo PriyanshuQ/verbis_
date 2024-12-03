@@ -19,12 +19,16 @@ const Dashboard = async () => {
 
   // Role-based redirection
   if (permissions?.permissions?.includes("influencers")) {
-    redirect("/explore-offers"); // Redirect to the Hotels page
+    redirect("/influencer-registration"); // Redirect to the registration page if not registered
     return null;
   } else if (permissions?.permissions?.includes("hotels")) {
     redirect("/manage-bookings"); // Redirect to the Hotels Dashboard
     return null;
-  }
+  } 
+  // else if (permissions?.permissions?.includes("influencers") && if he/she has already registered on appwrite db) {
+  //   redirect("/explore-offers"); // Redirect to the Hotels Dashboard
+  //   return null;
+  // }
 
   return (
     <div>

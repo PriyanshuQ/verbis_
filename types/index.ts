@@ -6,8 +6,9 @@ declare type SearchParamProps = {
   };
   
   declare type Gender = "Male" | "Female" | "Other";
-  declare type Platform = "Facebook" | "Instagram" | "YouTube" | "Twitter" | "TikTok";
+  declare type Platform = "Facebook" | "Instagram" ;
   declare type BookingStatus = "pending" | "confirmed" | "cancelled";
+  declare type GovtId = "Aadhaar" | "Driving Licence" | "PAN";
   
   declare interface CreateInfluencerParams {
     name: string;
@@ -28,7 +29,7 @@ declare type SearchParamProps = {
     followerCount: number;
     engagementRate: number; // percentage
     // portfolioUrl: string | undefined;
-    identificationType: string | undefined;
+    identificationType: GovtId[];
     identificationNumber: string | undefined;
     identificationDocument: FormData | undefined;
     privacyConsent: boolean;
@@ -62,7 +63,6 @@ declare type SearchParamProps = {
     offerId: string; // Connect the booking to a specific hotel offer
     checkInDate: Date;
     checkOutDate: Date;
-    purpose: string; // e.g., "collaboration", "promotion", "vacation"
     status: BookingStatus;
     specialRequests: string | undefined; // optional notes from the influencer
   };
