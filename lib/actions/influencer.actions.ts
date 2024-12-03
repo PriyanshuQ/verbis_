@@ -6,6 +6,7 @@ import {
   ENDPOINT,
   INFLUENCER_COLLECTION_ID,
   PROJECT_ID,
+  databases,
   storage,
   users,
 } from "../appwrite.config";
