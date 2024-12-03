@@ -60,32 +60,22 @@ const RenderField = ({ field, props }: { field: any; props: CustomProps }) => {
       );
       break;
 
-    case FormFieldType.PHONE_INPUT:
-      return (
-        <FormControl>
-          <PhoneInput
-            defaultCountry="IN"
-            placeholder={placeholder}
-            international
-            withCountryCallingCode
-            value={field.value as E164Number | undefined}
-            onChange={(value) => {
-              // Prevent backspacing the country code
-              if (value) {
-                const parsedNumber = parsePhoneNumber(value);
-                if (parsedNumber) {
-                  field.onChange(parsedNumber.number); // Update only valid numbers
-                } else {
-                  field.onChange(value); // Fallback to the raw input
-                }
-              } else {
-                field.onChange(""); // Set to empty string if no value
-              }
-            }}
-            className="input-phone"
-          />
-        </FormControl>
-      );
+      case FormFieldType.PHONE_INPUT:
+        return (
+          <FormControl>
+            <PhoneInput
+              defaultCountry="IN"
+              placeholder={props.placeholder}
+              international
+              withCountryCallingCode
+              value={field.value as E164Number | undefined}
+              onChange={field.onChange}
+              className="input-phone"
+            />
+          </FormControl>
+        );
+
+
     default:
       break;
   }

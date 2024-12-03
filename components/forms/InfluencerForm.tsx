@@ -162,23 +162,85 @@ const InfluencerForm = () => {
   }, [form]);
 
   // Define a submit handler
+
+  // const onSubmit = async (values: z.infer<typeof UserFormValidation>) => {
+  //   setIsLoading(true);
+  
+  //   try {
+  //     console.log("Form submission started. Submitted values:", values);
+  
+  //     const user = {
+  //       name: values.name,
+  //       email: values.email,
+  //       phone: values.phone,
+  //     };
+  
+  //     console.log("Prepared user data for API call:", user);
+  
+  //     // Call the createUser API
+  //     const newUser = await createUser(user);
+  
+  //     if (newUser) {
+  //       console.log("User created successfully. API response:", newUser);
+  //       router.push(`/influencer/${newUser.$id}/register`);
+  //     } else {
+  //       console.error("User creation failed: No user returned from API.");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error occurred during user creation:", error);
+  //     alert("Something went wrong while creating the user. Please try again.");
+  //   } finally {
+  //     setIsLoading(false);
+  //     console.log("Form submission completed.");
+  //   }
+  // };
+  
+
+  // async function onSubmit({
+  //   name,
+  //   email,
+  //   phone,
+  // }: z.infer<typeof UserFormValidation>) {
+  //   setIsLoading(true);
+
+  //   try {
+  //     const userData = { name, email, phone };
+  //     const user = await createUser(userData);
+  //     if (user) router.push(`/influencers/${user.$id}/register`);
+  //   } catch (error) {
+  //     console.log(error);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // }
+
   async function onSubmit({
     name,
     email,
     phone,
   }: z.infer<typeof UserFormValidation>) {
     setIsLoading(true);
-
+  
+    console.log("Submitting form data:", { name, email, phone }); // Log form data
+  
     try {
       const userData = { name, email, phone };
-      const user = await createUser(userData);
-      if (user) router.push(`/influencers/${user.$id}/register`);
+      const newUser = await createUser(userData);
+  
+      console.log("User created:", newUser); // Log API response
+  
+      if (newUser) {
+        router.push(`/influencers/${newUser.$id}/register`);
+      } else {
+        console.error("User creation failed: No user returned");
+      }
     } catch (error) {
-      console.log(error);
+      console.error("Error during user creation:", error);
     } finally {
       setIsLoading(false);
     }
   }
+  
 
   return (
     <Form {...form}>
@@ -193,7 +255,7 @@ const InfluencerForm = () => {
           control={form.control}
           name="name"
           label="Full name"
-          placeholder="John Doe"
+          placeholder="John Cena"
           iconSrc="/assets/icons/user.svg"
           iconAlt="user"
         />
@@ -203,10 +265,11 @@ const InfluencerForm = () => {
           control={form.control}
           name="email"
           label="Email"
-          placeholder="example@gmail.com"
+          placeholder="cena@gmail.com"
           iconSrc="/assets/icons/email.svg"
           iconAlt="email"
         />
+        
 
         <CustomFormField
           fieldType={FormFieldType.PHONE_INPUT}
