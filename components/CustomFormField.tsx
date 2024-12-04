@@ -32,11 +32,9 @@ interface CustomProps {
 }
 
 const RenderField = ({ field, props }: { field: any; props: CustomProps }) => {
-  const { fieldType, iconSrc, iconAlt, placeholder } = props;
-
+  const { fieldType, iconSrc, iconAlt, placeholder, renderSkeleton } = props;
 
   switch (props.fieldType) {
-
     case FormFieldType.INPUT:
       return (
         <div className="flex rounded-md border border-dark-500 bg-dark-300">
@@ -60,29 +58,31 @@ const RenderField = ({ field, props }: { field: any; props: CustomProps }) => {
       );
       break;
 
-      case FormFieldType.PHONE_INPUT:
-        return (
-          <FormControl>
-            <PhoneInput
-              defaultCountry="IN"
-              placeholder={props.placeholder}
-              international
-              withCountryCallingCode
-              value={field.value as E164Number | undefined}
-              onChange={field.onChange}
-              className="input-phone"
-            />
-          </FormControl>
-        );
+    case FormFieldType.PHONE_INPUT:
+      return (
+        <FormControl>
+          <PhoneInput
+            defaultCountry="IN"
+            placeholder={props.placeholder}
+            international
+            withCountryCallingCode
+            value={field.value as E164Number | undefined}
+            onChange={field.onChange}
+            className="input-phone"
+          />
+        </FormControl>
+      );
 
-
+    case FormFieldType.SKELETON:
+      return renderSkeleton ? renderSkeleton
+      (field) : null
     default:
       break;
   }
 };
 
 const CustomFormField = (props: CustomProps) => {
-  const { control, fieldType, name, label,  } = props;
+  const { control, fieldType, name, label } = props;
   return (
     <FormField
       control={control}

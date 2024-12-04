@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   title: "Verbis",
   description: "Influencer and Hotel Collaboration Software",
   icons: {
-    icon: "/assets/icons/logo-icon.svg",
+    icon: "/assets/icons/logo-full.png",
   },
 };
 
