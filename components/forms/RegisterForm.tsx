@@ -8,22 +8,40 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl } from "@/components/ui/form";
 import CustomFormField from "../CustomFormField";
 import SubmitButton from "../SubmitButton";
-import { UserFormValidation } from "@/lib/validation";
+import { InfluencerFormValidation } from "@/lib/validation";
 import { useRouter } from "next/navigation";
 import { createUser } from "@/lib/actions/influencer.actions";
 import { FormFieldType } from "./InfluencerForm";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
-import { GenderOptions, Platform } from "@/constants";
+import {
+  GenderOptions,
+  IdentificationTypes,
+  Platform,
+  ageRange,
+} from "@/constants";
 import { Label } from "../ui/label";
+import { SelectItem } from "../ui/select";
+import FileUploader from "../FileUploader";
 
 const RegisterForm = ({ user }: { user: Influencer }) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
   // Define the form and default values
-  const form = useForm<z.infer<typeof UserFormValidation>>({
-    resolver: zodResolver(UserFormValidation),
-    defaultValues: {},
+  const form = useForm<z.infer<typeof InfluencerFormValidation>>({
+    resolver: zodResolver(InfluencerFormValidation),
+    defaultValues: {
+      gender: "Male" as Gender,
+      platform: "Instagram" as Platform,
+      insights: "",
+      followers: 0,
+      social_media_url: "",
+      identificationType: "Government ID Proof",
+      identificationNumber: "",
+      identificationDocument: [],
+      dataConsent: false,
+      contentusageConsent: false,
+    },
   });
 
   // Fetch user details (email) from the API on mount and update form state
@@ -52,26 +70,22 @@ const RegisterForm = ({ user }: { user: Influencer }) => {
 
   // Define a submit handler
 
-  async function onSubmit({
-    name,
-    email,
-    phone,
-  }: z.infer<typeof UserFormValidation>) {
+  async function onSubmit(values: z.infer<typeof InfluencerFormValidation>) {
     setIsLoading(true);
 
-    console.log("Submitting form data:", { name, email, phone }); // Log form data
+    let formData;
+
+    // if(values.identificationDocument && values.identificationDocument.length>0){
+    //   const blobFile = new Blob([values.identificationDocument[0]], {
+    //     type: values.identificationDocument[0].type,
+    //   })
+
+    //   formData = new FormData();
+    //   formData.append(blobFile, blobFile);
+    
 
     try {
-      const userData = { name, email, phone };
-      const newUser = await createUser(userData);
 
-      console.log("User created:", newUser); // Log API response
-
-      if (newUser) {
-        router.push(`/influencers/${newUser.$id}/register`);
-      } else {
-        console.error("User creation failed: No user returned");
-      }
     } catch (error) {
       console.error("Error during user creation:", error);
     } finally {
@@ -80,10 +94,22 @@ const RegisterForm = ({ user }: { user: Influencer }) => {
   }
 
   return (
+    // Username
+    // Email
+    // Phone
+    // Gender
+    // Social Media Platform
+    // URL
+    // Follower Count
+    // Preferred Niche/Category
+    // Insights into their reach (age group etc)
+    // Previous Collaborations (If any)
+    // ID
+
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-12 flex-1"
+        className="space-y-10 flex-1"
       >
         <section className="space-y-4">
           <h1 className="header">Welcome,</h1>
@@ -92,9 +118,13 @@ const RegisterForm = ({ user }: { user: Influencer }) => {
         <section className="space-y-6">
           <div className="mb-9 space-y-1">
             <h2 className="sub-header">Some More Information</h2>
+            <div className="text-14-regular">
+              &#40;NOTE: Currently we only support Instagram&#41;
+            </div>
           </div>
         </section>
-        <div className="flex flex-col gap-6 ">
+
+        <div className="flex flex-col gap-6">
           <CustomFormField
             fieldType={FormFieldType.SKELETON}
             control={form.control}
@@ -119,6 +149,8 @@ const RegisterForm = ({ user }: { user: Influencer }) => {
               </FormControl>
             )}
           />
+        </div>
+        <div className="flex flex-col gap-6">
           <CustomFormField
             fieldType={FormFieldType.SKELETON}
             control={form.control}
@@ -138,6 +170,7 @@ const RegisterForm = ({ user }: { user: Influencer }) => {
                         {option}
                       </Label>
                     </div>
+                    
                   ))}
                 </RadioGroup>
               </FormControl>
@@ -152,6 +185,16 @@ const RegisterForm = ({ user }: { user: Influencer }) => {
             iconSrc="/assets/icons/users.svg"
             iconAlt="followers"
           />
+          {/* //validation of link */}
+          <CustomFormField
+            fieldType={FormFieldType.INPUT}
+            control={form.control}
+            name="social_media_url"
+            label="Your Profile URL (Instagram / Facebook)"
+            placeholder="https://instagram.com/johncena"
+          />
+        </div>
+        <div className="flex gap-6">
           <CustomFormField
             fieldType={FormFieldType.INPUT}
             control={form.control}
@@ -159,7 +202,89 @@ const RegisterForm = ({ user }: { user: Influencer }) => {
             label="Preffered Niche/Category"
             placeholder="Travel, Fitness, etc"
           />
+          <CustomFormField
+            fieldType={FormFieldType.SELECT}
+            control={form.control}
+            name="insights"
+            label="Insights (Your Followers Age Range)"
+            placeholder="Select"
+          >
+            {ageRange.map((option) => (
+              <SelectItem key={option} value={option}>
+                <div className="flex cursor-pointer items-center gap-2">
+                  <p>{option}</p>
+                </div>
+              </SelectItem>
+            ))}
+          </CustomFormField>
         </div>
+        <div>
+          <CustomFormField
+            fieldType={FormFieldType.TEXTAREA}
+            control={form.control}
+            name="previous_collaborations"
+            label="Previous Collaborations (If any)"
+            placeholder="Brand Name"
+          />
+        </div>
+        <section className="space-y-6">
+          <div className="mb-2 space-y-1">
+            <h2 className="sub-header">Identification and Verification</h2>
+            <div className="text-14-regular">
+              &#40;NOTE: Verification are done manually on our website&#41;
+            </div>
+          </div>
+        </section>
+        <CustomFormField
+          fieldType={FormFieldType.SELECT}
+          control={form.control}
+          name="identificationType"
+          label="Identification Type"
+          placeholder="Select"
+        >
+          {IdentificationTypes.map((option) => (
+            <SelectItem key={option} value={option}>
+              <div className="flex cursor-pointer items-center gap-2">
+                <p>{option}</p>
+              </div>
+            </SelectItem>
+          ))}
+        </CustomFormField>
+        <CustomFormField
+          fieldType={FormFieldType.INPUT}
+          control={form.control}
+          name="identificationNumber"
+          label="Identification Number"
+          placeholder="1234 1234 1234"
+        />
+        <CustomFormField
+          fieldType={FormFieldType.SKELETON}
+          control={form.control}
+          name="identificationDocument"
+          label="Scanned copy of identification Document"
+          renderSkeleton={(field) => (
+            <FormControl>
+              <FileUploader files={field.value} onChange={field.onChange} />
+            </FormControl>
+          )}
+        />
+        <section className="space-y-6">
+          <div className="mb-9 space-y-1">
+            <h2 className="sub-header">Consent and Privacy</h2>
+          </div>
+        </section>
+        <CustomFormField
+          fieldType={FormFieldType.CHECKBOX}
+          control={form.control}
+          name="dataConsent"
+          label="I consent to the collection and use of my data as described in the Privacy Policy."
+        />
+        <CustomFormField
+          fieldType={FormFieldType.CHECKBOX}
+          control={form.control}
+          name="contentusageConsent"
+          label="I authorize the platform to showcase my submitted content for promotional purposes in accordance with the Terms of Service."
+        />
         <SubmitButton isLoading={isLoading}>Get Started</SubmitButton>
       </form>
     </Form>

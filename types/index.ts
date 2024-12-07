@@ -6,7 +6,7 @@ declare type SearchParamProps = {
   };
   
   declare type Gender = "Male" | "Female" | "Other";
-  declare type Platform = "Facebook" | "Instagram" ;
+  declare type Platform = "Instagram" | "Other" ;
   declare type BookingStatus = "pending" | "confirmed" | "cancelled";
   declare type GovtId = "Aadhaar" | "Driving Licence" | "PAN";
   

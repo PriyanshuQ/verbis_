@@ -3,7 +3,8 @@ import { getUser } from "@/lib/actions/influencer.actions";
 import Image from "next/image";
 import React from "react";
 
-const Register = async ({ params: { userId } }: SearchParamProps) => {
+const Register = async ({ params }: SearchParamProps) => {
+  const { userId } = await params; // Await params before destructuring
   const user = await getUser(userId);
   return (
     <div className="flex h-screen max-h-screen">
@@ -26,10 +27,12 @@ const Register = async ({ params: { userId } }: SearchParamProps) => {
               {/* Prevent this text from being translated */}
             </div>
           </div>
-          <RegisterForm user={user}/>
+          <RegisterForm user={user} />
+          <div className="text-14-regular mt-20 flex justify-between">
             <p className="justify-items-end text-dark-600 xl:text-left">
               © 2024 verbis
             </p>
+          </div>
         </div>
       </section>
       <Image
