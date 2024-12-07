@@ -5,10 +5,11 @@ declare type SearchParamProps = {
     searchParams: { [key: string]: string | string[] | undefined };
   };
   
-  declare type Gender = "Male" | "Female" | "Other";
+  declare type GenderOptions = "Male" | "Female" | "Other";
+  declare type ageRange = "13-17"| "18-24"| "25-34"| "35-44"| "45-54"
   declare type Platform = "Instagram" | "Other" ;
   declare type BookingStatus = "pending" | "confirmed" | "cancelled";
-  declare type GovtId = "Aadhaar" | "Driving Licence" | "PAN";
+  declare type IdentificationTypes = "Government_ID_Proof" | "Driving_Licence" | "PAN";
   
   declare interface CreateInfluencerParams {
     name: string;
@@ -21,19 +22,19 @@ declare type SearchParamProps = {
   }
   
   declare interface RegisterInfluencerParams extends CreateInfluencerParams {
-    influencerId: string;
-    // birthDate: Date;
-    gender: Gender;
-    socialMediaPlatform: Platform[];
-    socialMediaHandle: string;
-    followerCount: number;
-    engagementRate: number; // percentage
-    // portfolioUrl: string | undefined;
-    identificationType: GovtId[];
+    userId: string;
+    gender: GenderOptions;
+    platform: Platform;
+    insights: ageRange; // percentage
+    followers: number;
+    social_media_url: string;
+    niche: string | undefined;
+    identificationType: IdentificationTypes;
     identificationNumber: string | undefined;
     identificationDocument: FormData | undefined;
-    privacyConsent: boolean;
-    // address: string;
+    dataConsent: boolean;
+    contentusageConsent: boolean;
+    verified: boolean;
     previousCollaborations: string | undefined;
     // mediaKit: FormData | undefined; // optional file upload for a media kit
   }

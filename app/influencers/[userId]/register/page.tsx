@@ -6,6 +6,7 @@ import React from "react";
 const Register = async ({ params }: SearchParamProps) => {
   const { userId } = await params; // Await params before destructuring
   const user = await getUser(userId);
+
   return (
     <div className="flex h-screen max-h-screen">
       <section className="remove-scrollbar container">

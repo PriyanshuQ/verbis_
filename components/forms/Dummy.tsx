@@ -12,7 +12,6 @@ import { InfluencerFormValidation } from "@/lib/validation";
 import { useRouter } from "next/navigation";
 import {
   createUser,
-  registerInfluencer,
   // registerInfluencer,
 } from "@/lib/actions/influencer.actions";
 import { FormFieldType } from "./InfluencerForm";
@@ -28,14 +27,8 @@ import { Label } from "../ui/label";
 import { SelectItem } from "../ui/select";
 import FileUploader from "../FileUploader";
 
-const RegisterForm = ({ user }: { user: Influencer }) => {
-  const router = useRouter();
+const RegisterForm = () => {
   const [isLoading, setIsLoading] = useState(false);
-
-  // Destructure user data
-  const { name, email, phone } = user;
-
-  // Define the form and default values
   const form = useForm<z.infer<typeof InfluencerFormValidation>>({
     resolver: zodResolver(InfluencerFormValidation),
     defaultValues: {
@@ -43,49 +36,10 @@ const RegisterForm = ({ user }: { user: Influencer }) => {
     },
   });
 
-  async function onSubmit(values: z.infer<typeof InfluencerFormValidation>) {
-    console.log("Form submitted with values:", values);
-    setIsLoading(true);
-    
-    let formData;
-    
-    if (
-      values.identificationDocument &&
-      values.identificationDocument.length > 0
-    ) {
-      const blobFile = new Blob([values.identificationDocument[0]], {
-        type: values.identificationDocument[0].type,
-      });
-      
-      formData = new FormData();
-      formData.append("blobFile", blobFile);
-      formData.append("fileName", values.identificationDocument[0].name);
-    }
-
-    try {
-      const influencerData = {
-        ...values,
-        userId: user.$id,
-        name: name,
-        email: email,
-        phone: phone,
-        identificationDocument: formData,
-      };
-
-      // @ts-ignore
-      const influencer = await registerInfluencer(influencerData);
-      console.log("Influencer registration response:", influencer);
-      if (influencer) {
-        console.log("Navigation to explore offers page");
-        router.push(`/influencers/${user.$id}/explore-offers`);
-      }
-      
-    } catch (error) {
-      console.error("Error during user creation:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  }
+  const onSubmit = (data: any) => {
+    console.log("Form submitted with values:", data); // Log submitted data
+    alert("Form submitted"); // Show a simple alert on form submission
+  };
 
   return (
     <Form {...form}>
@@ -273,3 +227,4 @@ const RegisterForm = ({ user }: { user: Influencer }) => {
 };
 
 export default RegisterForm;
+

@@ -11,6 +11,7 @@ import {
   users,
 } from "../appwrite.config";
 import { parseStringify } from "../utils";
+import {InputFile} from "node-appwrite/file"
 
 
 export const createUser = async (user: CreateInfluencerParams) => {
@@ -45,6 +46,37 @@ export const getUser = async(userId: string) => {
     const user = await users.get(userId);
     return parseStringify(user)
   } catch (error) {
+    console.log(error)
+  }
+}
+
+export const registerInfluencer = async ({identificationDocument, ...influencer }: RegisterInfluencerParams) => {
+  try{
+    console.log("123")
+    let file;
+
+    if(identificationDocument){
+      const inputFile = InputFile.fromBuffer(
+        identificationDocument?.get('blobFile') as Blob,
+        identificationDocument?.get('fileName') as string,
+      )
+
+      file = await storage.createFile(BUCKET_ID!, ID.unique(), inputFile)
+    }
+    const newInfluencer = await databases.createDocument(
+      DATABASE_ID!,
+      INFLUENCER_COLLECTION_ID!,
+      ID.unique(),
+      {
+        identificationDocumentId: file?.$id || null,
+        identificationDocumentUrl: file?.$id
+          ? `${ENDPOINT}/storage/buckets/${BUCKET_ID}/files/${file.$id}/view??project=${PROJECT_ID}`
+          : null,
+          ...influencer
+      }
+    )
+    return parseStringify(newInfluencer)
+  } catch(error){
     console.log(error)
   }
 }
