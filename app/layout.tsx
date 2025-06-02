@@ -39,7 +39,7 @@ export default function RootLayout({
       >
         {/* <ThemeProvider attribute="class" defaultTheme="dark"> */}
         <Navbar />
-        {children}
+        <div className="pt-14">{children}</div> 
         {/* </ThemeProvider> */}
       </body>
       {/* </Providers> */}

@@ -12,6 +12,7 @@ export const {
   HOTEL_COLLECTION_ID,
   BOOKING_COLLECTION_ID,
   NEXT_PUBLIC_BUCKET_ID: BUCKET_ID,
+  NEXT_PUBLIC_HOTELIMAGES_ID: HOTELIMG_ID,
 } = process.env;
 
 const client = new sdk.Client();

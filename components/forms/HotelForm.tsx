@@ -1,0 +1,173 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { Button } from "@/components/ui/button";
+import { Form } from "@/components/ui/form";
+import CustomFormField from "../CustomFormField";
+import SubmitButton from "../SubmitButton";
+import { HotelFormValidation } from "@/lib/validation";
+import { useRouter } from "next/navigation";
+import { createHotel, getUserEmail, getHotel } from "@/lib/actions/hotel.actions";
+
+export enum FormFieldType {
+  INPUT = "input",
+  TEXTAREA = "textarea",
+  VIEW = "textarea",
+  PHONE_INPUT = "phoneInput",
+  CHECKBOX = "checkbox",
+  DATE_PICKER = "datePicker",
+  SELECT = "select",
+  SKELETON = "skeleton",
+}
+
+const HotelForm = () => {
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Define the form and default values
+  const form = useForm<z.infer<typeof HotelFormValidation>>({
+    resolver: zodResolver(HotelFormValidation),
+    defaultValues: {
+      hotelname: "",
+      hotelemail: "", // Always provide an initial value
+      contactnumber: "",
+    },
+  });
+
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      try {
+        const response = await fetch("/api/user"); // Ensure this is the correct API endpoint
+        if (response.ok) {
+          const hotel = await response.json();
+          const hotelDetails = await getUserEmail(hotel.email); // Check if the email exists in your database
+          const { email } = hotelDetails
+          if (email) {
+          //   // If email matches, redirect to the homepage or another page
+            router.push(`/hotels/${hotelDetails.$id}/register`); // Replace "/home" with your desired route
+            return;
+          }
+        } else {
+          console.error("Failed to fetch user details:", response.statusText);
+        }
+      } catch (error) {
+        console.error("Error fetching user details:", error);
+      }
+    };
+
+    fetchUserDetails();
+  }, []);
+
+  // Fetch user details (email) from the API on mount and update form state
+  // if you are making this by yourself please do not call getInfluencer as it returns all the information
+  // of the user including ID and in this we are firstly using email to find the id and then all info
+
+  
+//   useEffect(() => {
+//     const fetchUserDetails = async () => {
+//       try {
+//         const response = await fetch("/api/user"); // Ensure this is the correct API endpoint
+//         if (response.ok) {
+//           const user = await response.json();
+//           const userDetails = await getUserEmail(user.email); // Check if the email exists in your database
+//           const { id, email } = userDetails
+//           if (email) {
+//           //   // If email matches, redirect to the homepage or another page
+//             router.push(`/influencers/${userDetails.$id}/register`); // Replace "/home" with your desired route
+//             return;
+//           }
+
+//           // Update the form state directly with `reset`
+//           form.reset({
+//             name: user.given_name || "",
+//             email: user.email || "", // Set fallback values
+//             phone: "",
+//           });
+//         } else {
+//           console.error("Failed to fetch user details:", response.statusText);
+//         }
+//       } catch (error) {
+//         console.error("Error fetching user details:", error);
+//       }
+//     };
+
+//     fetchUserDetails();
+//   }, [form]);
+
+  // Define a submit handler
+
+  async function onSubmit({
+    hotelname,
+    hotelemail,
+    contactnumber,
+  }: z.infer<typeof HotelFormValidation>) {
+    setIsLoading(true);
+  
+    console.log("Submitting form data:", { hotelname, hotelemail, contactnumber }); // Log form data
+  
+    try {
+      const hotelData = { hotelname, hotelemail, contactnumber };
+      const newHotel = await createHotel(hotelData);
+  
+      console.log("Hotel created:", newHotel); // Log API response
+  
+      if (newHotel) {
+        router.push(`/hotels/${newHotel.$id}/register`);
+      } else {
+        console.error("Hotel creation failed: No hotel returned");
+      }
+    } catch (error) {
+      console.error("Error during hotel creation:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+  
+
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 flex-1">
+        <section className="mb-12 space-y-4">
+          <h1 className="header">Hey there,</h1>
+          <p className="text-dark-700">List your Hotel with us</p>
+        </section>
+
+        <CustomFormField
+          fieldType={FormFieldType.INPUT}
+          control={form.control}
+          name="hotelname"
+          label="Name of the Hotel"
+          placeholder="Hotel Name"
+          iconSrc="/assets/icons/user.svg"
+          iconAlt="user"
+        />
+
+        <CustomFormField
+          fieldType={FormFieldType.INPUT}
+          control={form.control}
+          name="hotelemail"
+          label="Hotel Email Address"
+          placeholder="abc@gmail.com"
+          iconSrc="/assets/icons/email.svg"
+          iconAlt="email"
+        />
+        
+
+        <CustomFormField
+          fieldType={FormFieldType.PHONE_INPUT}
+          control={form.control}
+          name="contactnumber"
+          label="Contact Number"
+          placeholder="0987654321"
+        />
+
+        <SubmitButton isLoading={isLoading}>Get Started</SubmitButton>
+      </form>
+    </Form>
+  );
+};
+
+export default HotelForm;

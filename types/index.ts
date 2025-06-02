@@ -38,16 +38,37 @@ declare type SearchParamProps = {
     previousCollaborations: string | undefined;
     // mediaKit: FormData | undefined; // optional file upload for a media kit
   }
+
+  declare interface CreateHotelParams {
+    hotelname: string;
+    hotelemail: string;
+    contactnumber: string;
+  }
+
+  declare interface Hotel extends CreateHotelParams {
+    $id: string;
+  }
   
-  declare interface HotelDetails {
-    hotelId: string;
-    name: string;
-    location: string;
-    amenities: string[];
-    contactEmail: string;
-    contactPhone: string;
-    rating: number; // e.g., 4.5 out of 5
-    offers: HotelOffer[]; // List of offers provided by the hotel
+  declare interface RegisterHotelParams extends CreateHotelParams {
+    userId: string;
+    address: string;
+    city: string;
+    state: string;
+    pincode: string;
+    locationurl: string;
+    starrating: number;
+    whatsappcontactnumber: string;
+    hotelwebsiteurl: string;
+    socialmediaurl:string;
+    image1: FormData | undefined;
+    image2: FormData | undefined;
+    image3: FormData | undefined;
+    contentusageConsent: boolean;
+    collaborationagreementConsent: boolean;
+    totalBooking: number;
+    activeSessions: number;
+    pendingBookings: number;
+    cancellationRequest: number;
   }
   
   declare interface HotelOffer {

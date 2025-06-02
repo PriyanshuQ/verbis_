@@ -10,7 +10,7 @@ import CustomFormField from "../CustomFormField";
 import SubmitButton from "../SubmitButton";
 import { UserFormValidation } from "@/lib/validation";
 import { useRouter } from "next/navigation";
-import { createUser } from "@/lib/actions/influencer.actions";
+import { createUser, getUserEmail } from "@/lib/actions/influencer.actions";
 
 export enum FormFieldType {
   INPUT = "input",
@@ -38,12 +38,24 @@ const InfluencerForm = () => {
   });
 
   // Fetch user details (email) from the API on mount and update form state
+  // if you are making this by yourself please do not call getInfluencer as it returns all the information
+  // of the user including ID and in this we are firstly using email to find the id and then all info
+
+  
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
         const response = await fetch("/api/user"); // Ensure this is the correct API endpoint
         if (response.ok) {
           const user = await response.json();
+          const userDetails = await getUserEmail(user.email); // Check if the email exists in your database
+          const { id, email } = userDetails
+          if (email) {
+          //   // If email matches, redirect to the homepage or another page
+            router.push(`/influencers/${userDetails.$id}/register`); // Replace "/home" with your desired route
+            return;
+          }
+
           // Update the form state directly with `reset`
           form.reset({
             name: user.given_name || "",

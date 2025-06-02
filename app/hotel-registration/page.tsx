@@ -2,6 +2,7 @@
 import InfluencerForm from "@/components/forms/InfluencerForm";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
+import HotelForm from "@/components/forms/HotelForm";
 import { useRouter } from "next/navigation";
 
 const Registration = () => {
@@ -14,13 +15,7 @@ const Registration = () => {
         const response = await fetch("/api/user"); // Ensure this is the correct API endpoint
         if (response.ok) {
           const user = await response.json();
-          // Update the form state directly with `reset` if needed
-          // form.reset({
-          //   name: user.given_name || "",
-          //   email: user.email || "", // Set fallback values
-          //   phone: "",
-          // });
-          setLoading(false); // Stop loading once user is fetched
+          setLoading(false); // User details fetched, stop loading
         } else {
           router.push("/");
         }
@@ -34,7 +29,7 @@ const Registration = () => {
   }, []);
 
   if (loading) {
-    return null; // Render nothing while loading
+    return null; // Prevent rendering the page while loading
   }
 
   return (
@@ -59,7 +54,7 @@ const Registration = () => {
                 {/* Prevent this text from being translated */}
               </div>
             </div>
-            <InfluencerForm />
+            <HotelForm />
             <div className="text-14-regular mt-20 flex justify-between">
               <p className="justify-items-end text-dark-600 xl:text-left">
                 © 2024 verbis

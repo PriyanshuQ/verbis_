@@ -83,3 +83,106 @@ export const InfluencerFormValidation = z.object({
     }),
 
 });
+
+export const HotelFormValidation = z.object({
+  hotelname: z
+    .string()
+    .min(3, {
+      message: "Name must be at least 3 characters.",
+    })
+    .max(30, {
+      message: "Name must be at most 30 characters.",
+    }),
+  hotelemail: z.string().email({
+    message: "Please enter a valid email.",
+  }),
+  contactnumber: z
+    .string()
+    .refine((phone) => /^\+\d{10,15}$/.test(phone), "Invalid phone number"),
+});
+
+export const HotelRegistrationValidation = z.object({
+
+  address: z.string().min(10, "Address must be at least 10 characters."),
+  city: z.string().min(2, "City must be at least 2 characters."),
+  state: z.string().min(2, "State must be at least 2 characters."),
+  pincode: z
+    .string()
+    .refine((code) => /^\d{6}$/.test(code), "Invalid pincode (must be 6 digits)."),
+  locationurl: z
+    .string()
+    .transform((val) => val.trim())
+    .refine(
+      (value) => !value.includes(" "),
+      { message: "The URL cannot contain spaces" }
+    )
+    .refine(
+      (value) => /^https?:\/\/[^\s$.?#].[^\s]*$/.test(value),
+      { message: "Invalid Google Maps URL" }
+    ),
+
+  starrating: z
+    .string()
+    .refine(
+      (rating) => /^[1-5]$/.test(rating),
+      { message: "Star rating must be a number between 1 and 5." }
+      ).transform((rating) => parseInt(rating, 10)
+    ),
+  whatsappcontactnumber: z
+    .string()
+    .refine((num) => /^\d{10}$/.test(num), "Invalid WhatsApp number (must be 10 digits).")
+    .optional(),
+    
+  hotelwebsiteurl: z
+    .string()
+    .transform((val) => val.trim())
+    .refine(
+      (value) => !value.includes(" "),
+      { message: "The URL cannot contain spaces" }
+    )
+    .refine(
+      (value) => /^https?:\/\/[^\s$.?#].[^\s]*$/.test(value),
+      { message: "Invalid URL format." }
+    ).optional(),
+
+  socialmediaurl: z
+    .string()
+    .transform((val) => val.trim())
+    .refine(
+      (value) => !value.includes(" "),
+      { message: "The URL cannot contain spaces" }
+    )
+    .refine(
+      (value) => /^https?:\/\/[^\s$.?#].[^\s]*$/.test(value),
+      { message: "Invalid URL format." }
+    ).optional(),
+
+  image1: z
+    .custom<File[]>()
+    .refine((files) => files?.length > 0, {
+      message: "Images are required.",
+    }),
+  image2: z
+    .custom<File[]>()
+    .refine((files) => files?.length > 0, {
+      message: "Images are required.",
+    }),
+  image3: z
+    .custom<File[]>()
+    .refine((files) => files?.length > 0, {
+      message: "Images are required.",
+    }),
+
+  contentusageConsent: z
+    .boolean()
+    .default(false)
+    .refine((value) => value === true, {
+      message: "You must consent to disclosure in order to proceed.",
+    }),
+  collaborationagreementConsent: z
+    .boolean()
+    .default(false)
+    .refine((value) => value === true, {
+      message: "Please confirm your agreement to the collaboration terms before proceeding.",
+    }),
+});

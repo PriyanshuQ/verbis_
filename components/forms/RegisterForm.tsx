@@ -12,6 +12,7 @@ import { InfluencerFormValidation } from "@/lib/validation";
 import { useRouter } from "next/navigation";
 import {
   createUser,
+  getUserEmail,
   registerInfluencer,
   // registerInfluencer,
 } from "@/lib/actions/influencer.actions";
@@ -27,6 +28,7 @@ import {
 import { Label } from "../ui/label";
 import { SelectItem } from "../ui/select";
 import FileUploader from "../FileUploader";
+import { getInfluencer } from "@/lib/actions/influencer.actions";
 
 const RegisterForm = ({ user }: { user: Influencer }) => {
   const router = useRouter();
@@ -42,6 +44,30 @@ const RegisterForm = ({ user }: { user: Influencer }) => {
       ...InfluencerFormDefaultValues,
     },
   });
+
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      try {
+        const userDetails = await getUserEmail(user.email); // Check if the email exists in your database
+        // const { id } = userDetails;
+        const influencerDetails = await getInfluencer(`${userDetails.$id}`);
+        const { social_media_url, dataConsent, contentusageConsent } = influencerDetails;
+        // console.log(userDetails)
+        // console.log(influencerDetails)
+
+        if(social_media_url && dataConsent && contentusageConsent){
+          router.push(`/influencers/${userDetails.$id}/explore-offers`); // Replace "/home" with your desired route
+          return;
+        }
+
+      } catch (error) {
+        console.error("Error fetching user details:", error);
+      }
+    };
+    fetchUserDetails();
+  }, []);
+
+  
 
   async function onSubmit(values: z.infer<typeof InfluencerFormValidation>) {
     console.log("Form submitted with values:", values);
@@ -99,7 +125,7 @@ const RegisterForm = ({ user }: { user: Influencer }) => {
         </section>
         <section className="space-y-6">
           <div className="mb-9 space-y-1">
-            <h2 className="sub-header">Some More Information</h2>
+            <h2 className="sub-header">Additional Details</h2>
             <div className="text-14-regular">
               &#40;NOTE: Currently we only support Instagram&#41;
             </div>
